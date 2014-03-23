@@ -1,0 +1,7 @@
+#separate file for secret keys
+keys.py
+
+#data file we scrape 
+data.txt
+
+*.pyc
