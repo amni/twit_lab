@@ -1,6 +1,3 @@
-twit_lab
-========
-
 # Description 
 
 A social media marketing tool that uses machine learning to predict the user engagement of a tweet
