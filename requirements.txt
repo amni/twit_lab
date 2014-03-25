@@ -1,8 +1,16 @@
+Django==1.6.2
 Flask==0.10.1
 Jinja2==2.7.2
 MarkupSafe==0.19
 Werkzeug==0.9.4
+dj-database-url==0.3.0
+dj-static==0.0.5
+django-toolbelt==0.0.1
+gunicorn==18.0
 itsdangerous==0.23
+psycopg2==2.5.2
+pystache==0.5.3
+static==1.0.2
 tweepy==2.2
 twitter==1.14.1
 wsgiref==0.1.2
