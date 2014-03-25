@@ -4,8 +4,10 @@ from tweepy import OAuthHandler
 from tweepy.streaming import StreamListener
 from keys import *
 import sys
-
-import json 
+import json
+import database as db
+Tweet = db.Tweet
+session = db.session
 
 class listener(StreamListener):
 
@@ -18,6 +20,10 @@ class listener(StreamListener):
             stored_status['retweet_count']= status.retweet_count
             stored_status['created_at']= str(status.created_at)
             with open('data.txt', 'a') as outfile:
+                tweet = Tweet(tid=status.id, text=status.text, favorite_count=status.favorite_count, 
+                                retweet_count=status.retweet_count, created_at=status.created_at)
+                session.add(tweet)
+                session.commit()
                 json.dump(stored_status, outfile)
                 outfile.write('\n')
 
@@ -33,4 +39,4 @@ auth = OAuthHandler(ckey, csecret)
 auth.set_access_token(atoken, asecret)
 #api = API(auth)
 twitterStream = Stream(auth, listener())
-twitterStream.filter(track=['the'])
+twitterStream.sample()

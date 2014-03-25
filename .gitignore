@@ -4,4 +4,7 @@ keys.py
 #data file we scrape 
 data.txt
 
+# db created
+twitlab.db
+
 *.pyc
