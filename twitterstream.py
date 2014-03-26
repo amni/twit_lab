@@ -13,6 +13,7 @@ class listener(StreamListener):
 
     def on_status(self, status):
         stored_status={}
+        print status.text
         if status.text:
             stored_status['text']= status.text
             stored_status['id']= status.id
