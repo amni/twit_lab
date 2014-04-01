@@ -25,6 +25,7 @@ class listener(StreamListener):
                 user= User(id= tweet_user.id, followers_count=tweet_user.followers_count)
                 if not session.query(User).filter_by(id=user.id).first():
                     session.add(user)
+                    session.commit()
                 # if "retweeted_status" in dir(status):
                 #     print "retweet"
                 if "retweeted_status" in dir(status): 

@@ -1,9 +1,14 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, DateTime, Integer, String, Text, Boolean, ForeignKey
+from sqlalchemy import Column, DateTime, Integer, String, Text, Boolean, ForeignKey, BigInteger
 
-engine = create_engine('sqlite:///twitlab.db')
+from sqlalchemy.engine.url import URL
+
+import settings
+
+
+engine = create_engine(URL(**settings.DATABASE))
 Session = sessionmaker(bind=engine)
 
 Base = declarative_base()
@@ -13,7 +18,7 @@ session = Session()
 class User(Base):
 	__tablename__ = 'user'
 
-	id= Column(String(21), primary_key=True)
+	id= Column(BigInteger, primary_key=True)
 	created_at=Column(DateTime)
 	default_profile= Column(Boolean)
 	default_profile_img= Column(Boolean)
@@ -32,7 +37,7 @@ class Tweet(Base):
     retweet_count = Column(Integer)
     text = Column(Text)
     created_at = Column(DateTime)
-    user_id = Column(String, ForeignKey('user.id'))
+    user_id = Column(BigInteger, ForeignKey('user.id'))
 
 
 
