@@ -23,11 +23,20 @@ class listener(StreamListener):
             stored_status['created_at']= str(status.created_at)
             with open('data.txt', 'a') as outfile:
                 user= User(id= tweet_user.id, followers_count=tweet_user.followers_count)
-                tweet = Tweet(tid=status.id, text=status.text, favorite_count=status.favorite_count, 
-                                retweet_count=status.retweet_count, created_at=status.created_at, user_id=tweet_user.id)
                 if not session.query(User).filter_by(id=user.id).first():
                     session.add(user)
-                session.add(tweet)
+                # if "retweeted_status" in dir(status):
+                #     print "retweet"
+                if "retweeted_status" in dir(status): 
+                    print "got retweet"
+                    retweeted_tweet=session.query(Tweet).filter_by(text=status.text).first()
+                    if retweeted_tweet:
+                        retweeted_tweet.retweet_count+=1
+                else: 
+                    print "got tweet"
+                    tweet = Tweet(tid=status.id, text=status.text, favorite_count=status.favorite_count, 
+                                    retweet_count=status.retweet_count, created_at=status.created_at, user_id=tweet_user.id)
+                    session.add(tweet)
                 session.commit()
                 json.dump(stored_status, outfile)
                 outfile.write('\n')
