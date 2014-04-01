@@ -1,12 +1,14 @@
 import nltk
 import string
+import nltk.corpus
 
 from collections import Counter
+from nltk.corpus import stopwords
 
 class tfidf_test:
 
 	def parse():
-		file = open('sample_data.txt','r')
+		file = open('sample_data.json','r')
 		all_words = ''
 
 		# Parses tweet so tweet only containts relevant text.
@@ -22,7 +24,7 @@ class tfidf_test:
 
 			# Filter only relevant text
 			# Tweet text arbitrarily ends either on '"created_at":'' or '"id":''
-			# IDK Why
+			# IDKl Why
 			createAt_index = tweet_string.find('"created_at":')
 			id_index = tweet_string.find('"id":')
 
@@ -33,7 +35,8 @@ class tfidf_test:
 				end_index = createAt_index
 
 			tweet_text = tweet_string[0:end_index]
-			tweet_final = tweet_text.translate(None, string.punctuation)
+			tweet_lower = tweet_text.lower()
+			tweet_final = tweet_lower.translate(None, string.punctuation)
 			
 			# Concatenate all tweets
 			all_words = all_words + ' ' + tweet_final
@@ -46,8 +49,10 @@ class tfidf_test:
 	    tokens = nltk.word_tokenize(words)
 	    return tokens
 
+
 	words = parse()	
 	tokens = tokenize(words)
-	count = Counter(tokens)
-	print count.most_common(10)
+	filtered = [w for w in tokens if not w in stopwords.words('english')]
+	count = Counter(filtered)
+	print count.most_common(100) 
 
