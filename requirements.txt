@@ -16,3 +16,4 @@ static==1.0.2
 tweepy==2.2
 twitter==1.14.1
 wsgiref==0.1.2
+pg8000==1.9.7
