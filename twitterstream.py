@@ -50,8 +50,12 @@ class listener(StreamListener):
         print >> sys.stderr, 'Timeout...'
         return True
 
+f = open('popword.txt', 'r')
+words = list()
+for line in f:
+    words.append(line.rstrip())
 auth = OAuthHandler(ckey, csecret)
 auth.set_access_token(atoken, asecret)
 #api = API(auth)
 twitterStream = Stream(auth, listener())
-twitterStream.sample()
+twitterStream.filter(track=words[:400], languages=["en"])
