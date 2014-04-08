@@ -116,7 +116,8 @@ for word in word_Tcount_dict:
 
 tfidf_sorted = sorted(tfidf_dict.iteritems(), key=operator.itemgetter(1))
 
-print 'Word retweet popularity in descending order:'
+
+print 'Word TFIDF-retweet (num_RT/num_Tweet) popularity in descending order:'
 for x in tfidf_sorted:
 	print x
 
