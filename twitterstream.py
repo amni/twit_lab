@@ -16,6 +16,7 @@ class listener(StreamListener):
         stored_status={}
         tweet_user=status.user
         if status.text:
+            status.text = status.text.encode('ascii', 'ignore')
             stored_status['text']= status.text
             stored_status['id']= status.id
             stored_status['favorite_count']= status.favorite_count
