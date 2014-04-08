@@ -54,5 +54,6 @@ class tfidf_test:
 	tokens = tokenize(words)
 	filtered = [w for w in tokens if not w in stopwords.words('english')]
 	count = Counter(filtered)
-	print count.most_common(100) 
+	print type(filtered)
+	# print count.most_common(100) 
 
