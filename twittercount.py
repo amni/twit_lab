@@ -19,3 +19,4 @@ for tweet in tweets:
     print tweet.retweet_count, tweet.favorite_count
     session.commit()
     sleep(10)
+

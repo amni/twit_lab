@@ -1,3 +1,6 @@
+# DB settings file
+settings.py
+
 #separate file for secret keys
 keys.py
 
