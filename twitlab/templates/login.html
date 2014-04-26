@@ -1,1 +1,10 @@
-Login with <a href="{% url socialauth_begin 'twitter' %}">Twitter</a>
+<!doctype html>
+<title>Twitter Login</title>
+<head>
+	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+{% for message in get_flashed_messages() %}
+{{ message }}
+{% endfor %}
+<h1>Login</h1>
+<a href ="{{ url_for('login') }}"><img id="twitter-login-button" src="https://dev.twitter.com/sites/default/files/images_documentation/sign-in-with-twitter-gray.png" alt="Sign in with Twitter" title="Sign in with Twitter"></img></a>
