@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 import nltk
 import json
-import stringfrom tweepy import API
+import string
+from tweepy import API
 import sys
 
 import operator
@@ -24,6 +25,9 @@ word_RTcount_dict = {}
 word_Tcount_dict = {}
 word_tfidf_dict = {}
 
+tweet_tfidf_dict = {}
+tweet_wordcount_dict = {}
+
 sys.stdout = open('tfidf_output.txt', 'w')
 
 def fetch_word():
@@ -36,6 +40,9 @@ def fetch_word():
 
 	for tweet in tweets:
 		if tweet.text:
+			# Initializing final dictionary {tweet:tfidf total} & {tweet:# of words}
+			tweet_tfidf_dict[tweet.text] = None
+			tweet_wordcount_dict[tweet.text] = None
 			if guess_language(tweet.text) == 'en':
 				tweet_text = str(tweet.text.encode('utf-8'))
 				tweet_lower = tweet_text.lower()
@@ -96,7 +103,7 @@ for tweet in tweets:
 					#print 'word_Tcount_dict[word_in_tweet]' + ' ' +  word_in_tweet + ' ' + str(word_Tcount_dict[word_in_tweet])
 
 
-tfidf_dict = {}
+word_tfidf_dict = {}
 
 for word in word_Tcount_dict:
 	num_RT = None
@@ -115,17 +122,43 @@ for word in word_Tcount_dict:
 
 	tfidf_value = num_RT/num_Tweet
 
-	tfidf_dict[word] = tfidf_value
+	word_tfidf_dict[word] = tfidf_value
 
-tfidf_sorted = sorted(tfidf_dict.iteritems(), key=operator.itemgetter(1))
+# word_tfidf_sorted = sorted(word_tfidf_dict.iteritems(), key=operator.itemgetter(1))
 
 
-print 'Word TFIDF-retweet (num_RT/num_Tweet) popularity in descending order:'
-for x in tfidf_sorted:
+# print 'Word TFIDF-retweet (num_RT/num_Tweet) popularity in descending order:'
+# for x in word_tfidf_sorted:
+# 	print x
+
+
+# Find tweet tfidf TOTAL scores
+# Find tweet # of words
+
+for word in word_tfidf_dict.keys():
+	for tweet in tweet_tfidf_dict.keys():
+		if word in tweet:
+			if tweet_tfidf_dict[tweet] != None:
+				tweet_tfidf_dict[tweet] = tweet_tfidf_dict[tweet] + word_tfidf_dict[word]
+				tweet_wordcount_dict[tweet] = tweet_wordcount_dict[tweet] + 1
+			else:
+				tweet_tfidf_dict[tweet] = word_tfidf_dict[word]
+				tweet_wordcount_dict[tweet] = 1
+
+
+
+# Calculates avg and sorts
+
+for tweet in tweet_tfidf_dict.keys():
+	tweet_tfidf_dict[tweet] = tweet_tfidf_dict[tweet]/tweet_wordcount_dict[tweet]
+
+
+tweet_tfidf_sorted = {}
+tweet_tfidf_sorted = sorted(tweet_tfidf_sorted.iteritems(), key=operator.itemgetter(1))
+
+print 'Tweet and corresponding TFIDF scores in descending order:'
+for x in tweet_tfidf_sorted:
 	print x
-
-
-
 
 
 
