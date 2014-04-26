@@ -16,6 +16,7 @@ class listener(StreamListener):
         stored_status={}
         tweet_user=status.user
         if status.text:
+            status.text = status.text.encode('ascii', 'ignore')
             stored_status['text']= status.text
             stored_status['id']= status.id
             stored_status['favorite_count']= status.favorite_count
@@ -50,8 +51,12 @@ class listener(StreamListener):
         print >> sys.stderr, 'Timeout...'
         return True
 
+f = open('popword.txt', 'r')
+words = list()
+for line in f:
+    words.append(line.rstrip())
 auth = OAuthHandler(ckey, csecret)
 auth.set_access_token(atoken, asecret)
 #api = API(auth)
 twitterStream = Stream(auth, listener())
-twitterStream.sample()
+twitterStream.filter(track=words[:400], languages=["en"])
