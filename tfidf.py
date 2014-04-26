@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 import nltk
 import json
-import string
+import stringfrom tweepy import API
+import sys
+
 import operator
 import nltk.corpus
 from keys import *
 from time import sleep
-from tweepy import API
 from tweepy import OAuthHandler
 from collections import Counter
 from nltk.corpus import stopwords
@@ -22,6 +23,8 @@ word_tfidf_list = []
 word_RTcount_dict = {}
 word_Tcount_dict = {}
 word_tfidf_dict = {}
+
+sys.stdout = open('tfidf_output.txt', 'w')
 
 def fetch_word():
 
