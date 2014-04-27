@@ -1,0 +1,59 @@
+<!doctype html>
+<title>Twitter Login</title>
+<head>
+	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/style.css') }}">
+	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/bootstrap.css') }}">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Task', 'Number of Tweets'],
+          ['Primetime Hours',     11],
+          ['Non-Primetime Hours',    13]
+        ]);
+
+        var options = {
+          title: 'Tweeting Time',
+          is3D: true,
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
+        chart.draw(data, options);
+      }
+    </script>
+</head>
+<body class="background">
+
+
+	<div class="profile-container">
+		<div class="left-side-container" style="float:left; width:30%;overflow:hidden;">
+			<div class="mini-container">
+				<p>Alan Ni<p>	
+				<hr></hr>	
+				<p>30 Followers</p>
+			</div>
+		</div>
+		<div class="right-side-container" style="float:left; width:65%; overflow:hidden;">
+			<div class="mini-container" >
+				<div id="piechart_3d" style="width: 400px; height: 200px;"></div>
+				<p>Tweets most at time of day: 5 PM</p>
+
+				<p>Most used word in tweets: Coursera</p>
+				<p>Tweets most at time of day: 5 PM</p>
+
+				<p>Most used word in tweets: Coursera</p>
+				<p>Tweets most at time of day: 5 PM</p>
+
+				<p>Most used word in tweets: Coursera</p>
+				<p>Tweets most at time of day: 5 PM</p>
+
+				<p>Most used word in tweets: Coursera</p>
+
+			</div>
+		</div>
+	</div>
+
+
+</body>

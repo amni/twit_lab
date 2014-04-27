@@ -14,6 +14,7 @@ from flask.ext.sqlalchemy import SQLAlchemy
 
 from rauth.service import OAuth1Service
 from rauth.utils import parse_utf8_qsl
+import json
 
 
 # Flask config
@@ -107,15 +108,28 @@ def authorized():
 
     r = sess.get('statuses/user_timeline.json', params=params)
 
+    messages={}
+    tweets=[]
     for i, tweet in enumerate(r.json(), 1):
-        handle = tweet['user']['screen_name']
-        text = tweet['text']
-        print(u'{0}. @{1} - {2}'.format(i, handle, text))
+        if not "retweeted_status" in tweet: 
+            retweet_count= tweet['retweet_count']
+            text = tweet['text']
+            tweets.append(text)
+            print text
+            print retweet_count
+
+    messages["tweets"]= tweets
 
     User.get_or_create(verify['screen_name'], verify['id'])
-
+    session['messages']=messages
     flash('Logged in as ' + verify['name'])
-    return redirect(url_for('index'))
+    return redirect(url_for('profile'))
+
+
+@app.route('/twitter/profile')
+def profile():
+    print session["messages"]  
+    return render_template('profile.html')
 
 
 if __name__ == '__main__':

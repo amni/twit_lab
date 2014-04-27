@@ -2,9 +2,16 @@
 <title>Twitter Login</title>
 <head>
 	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/style.css') }}">
+	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/bootstrap.css') }}">
 </head>
+<body class="background">
+<div class="jumbotron box effect2" style="margin-top:10%; width:40%; height:25%; text-align:center; margin-right:auto; margin-left:auto; border-radius:15px; border:1px">
 {% for message in get_flashed_messages() %}
 {{ message }}
 {% endfor %}
-<h1>Login</h1>
+<h1><i>TwitLab</i></h1>
+<hr></hr>
+
 <a href ="{{ url_for('login') }}"><img id="twitter-login-button" src="https://dev.twitter.com/sites/default/files/images_documentation/sign-in-with-twitter-gray.png" alt="Sign in with Twitter" title="Sign in with Twitter"></img></a>
+</div>
+</body> 
