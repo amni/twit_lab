@@ -48,10 +48,8 @@ current_limit = 100
 window_time = 900
 
 # Set initial variables
-current_offset = 0
+current_offset = 500000
 window_beginning = math.floor(time.time())
-
-stat_file = open('stat.txt', 'w')
 
 while current_offset < total_count:
 	tweets = session.query(Tweet).offset(current_offset).limit(current_limit)
@@ -62,7 +60,7 @@ while current_offset < total_count:
 		statuses = api.lookup_statuses(ids)
 	except TweepError:
 		window_end = math.ceil(time.time())
-		time.sleep(window_time - (window_end - window_beginning) + 10)
+		time.sleep(window_time - (window_end - window_beginning) + 60)
 		window_beginning = math.floor(time.time())
 		statuses = api.lookup_statuses(ids)
 
@@ -72,5 +70,7 @@ while current_offset < total_count:
 			primetimetweet=is_primetime, num_followers=status.user.followers_count)
 		session.add(ptweet)
 	session.commit()
+	stat_file = open('stat.txt', 'w')
 	stat_file.write(str(current_offset)+'\n')
+	stat_file.close()
 	current_offset += current_limit
