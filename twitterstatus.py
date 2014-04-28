@@ -4,15 +4,19 @@ from tweepy import API
 from tweepy import OAuthHandler
 from tweepy.binder import bind_api
 from tweepy.utils import list_to_csv
+from tweepy.error import TweepError
 from keys import *
-import sys
+import time, math
 print "pretest"
 
+# Create DB instances
 import database as db
 Tweet = db.Tweet
 User= db.User
+ProcessedTweet = db.ProcessedTweet
 session = db.session
 
+# Add API methods
 def lookup_statuses(self, status_ids=None):
         return self._lookup_statuses(list_to_csv(status_ids))
 
@@ -25,38 +29,48 @@ _lookup_statuses = bind_api(
 API.lookup_statuses = lookup_statuses
 API._lookup_statuses = _lookup_statuses
 
+
+# Init API
 auth = OAuthHandler(ckey, csecret)
 auth.set_access_token(atoken, asecret)
 api = API(auth)
 
-tweets = session.query(Tweet).limit(100)
+# Primtime calculation helper
+def calc_primetime(date):
+	if date.hour > 16 and date.hour < 22:
+		return 1
+	else:
+		return 0
 
-ids = list()
+# Set constants
+total_count = session.query(Tweet).count()
+current_limit = 100
+window_time = 900
 
-for tweet in tweets:
-	ids.append(int(tweet.tid))
+# Set initial variables
+current_offset = 0
+window_beginning = math.floor(time.time())
 
-statuses = api.lookup_statuses(ids)
+stat_file = open('stat.txt', 'w')
 
-for status in statuses:
-	print(dir(status))
-	break
+while current_offset < total_count:
+	tweets = session.query(Tweet).offset(current_offset).limit(current_limit)
+	ids = list()
+	for tweet in tweets:
+		ids.append(tweet.tid)
+	try:
+		statuses = api.lookup_statuses(ids)
+	except TweepError:
+		window_end = math.ceil(time.time())
+		time.sleep(window_time - (window_end - window_beginning) + 10)
+		window_beginning = math.floor(time.time())
+		statuses = api.lookup_statuses(ids)
 
-# for tweet in tweets:
-# 	print(tweet.tid)
-# 	if tweet.tid:
-# 		# try:
-# 		status = api.get_status(int(tweet.tid))
-# 		print status
-# 		break
-# 		user=User.query.filter_by(id=status.user_id).first()
-# 		print ("User followers: %d" % user.followers_count)
-			
-		# except:
-		# 	print "Unexpected error:", sys.exc_info()[0]
-		# 	break
-		# print ("Retweets: %d" % status.retweet_count)
-		# print
-
-# print(dir(status))
-# print(status.retweet_count)
+	for status in statuses:
+		is_primetime = calc_primetime(status.created_at)
+		ptweet = ProcessedTweet(tid=status.id, retweet_count=status.retweet_count, text=status.text,
+			primetimetweet=is_primetime, num_followers=status.user.followers_count)
+		session.add(ptweet)
+	session.commit()
+	stat_file.write(str(current_offset)+'\n')
+	current_offset += current_limit

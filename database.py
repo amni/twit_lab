@@ -5,10 +5,10 @@ from sqlalchemy import Column, DateTime, Integer, String, Text, Boolean, Foreign
 
 from sqlalchemy.engine.url import URL
 
-import settings
+import local_settings
 
 
-engine = create_engine(URL(**settings.DATABASE))
+engine = create_engine(URL(**local_settings.DATABASE))
 Session = sessionmaker(bind=engine)
 
 Base = declarative_base()
@@ -39,6 +39,14 @@ class Tweet(Base):
     created_at = Column(DateTime)
     user_id = Column(BigInteger, ForeignKey('user.id'))
 
-
+class ProcessedTweet(Base):
+    __tablename__='processed_tweets'
+    id = Column(Integer, primary_key=True)
+    tid = Column(String(21))
+    retweet_count = Column(Integer)
+    text = Column(Text)
+    primetimetweet = Column(Integer)
+    num_followers= Column(Integer)
+    tfidf= Column(Integer)
 
 Base.metadata.create_all(engine) 
