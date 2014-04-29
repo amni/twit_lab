@@ -64,7 +64,7 @@ Calculates a linear regression model using the length of a tweet in characters, 
 
 ## tweet_tfidf.py
 
-An incomplete, not working script that intends to calculate the TF-IDF score of each processed tweet.
+Calculates the TF-IDF score of each processed tweet. Script is set to work for 10,000 processed tweets. Packages may need to be installed to run.
 
 ## historics_api.py
 
