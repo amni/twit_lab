@@ -4,7 +4,7 @@ import time
 from datasift import Client
 
 
-ds = Client("amni", "bd77910619934066a6c4eaf59137779b")
+ds = Client(username, api_key)
 
 @ds.on_delete
 def on_delete(interaction):
