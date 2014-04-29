@@ -10,50 +10,95 @@
       function drawChart() {
         var data = google.visualization.arrayToDataTable([
           ['Task', 'Number of Tweets'],
-          ['Primetime Hours',     11],
-          ['Non-Primetime Hours',    13]
+          ['Primetime Hours',     {{primetime_tweets}}],
+          ['Non-Primetime Hours',    {{nonprimetime_tweets}}]
         ]);
 
         var options = {
           title: 'Tweeting Time',
-          is3D: true,
+          pieHole: 0.2,
         };
 
         var chart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
         chart.draw(data, options);
       }
     </script>
+    <script type="text/javascript">
+      google.load('visualization', '1', {packages: ['corechart']});
+    </script>
+	<script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Word', 'Avg Retweets'],
+          ['{{highest_scoring_words.0}}',  {{tfidf_scores.0}}],
+          ['{{highest_scoring_words.1}}',  {{tfidf_scores.1}}],
+          ['{{highest_scoring_words.2}}',  {{tfidf_scores.2}}],
+          ['{{highest_scoring_words.3}}',  {{tfidf_scores.3}}],
+          ['{{highest_scoring_words.4}}',  {{tfidf_scores.4}}]
+        ]);
+        var options = {
+          title: 'Most Retweeted Words (Avg)',
+          vAxis: {title: 'Word'}
+        };
+
+        var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+      }
+    </script>
+     <script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+      	var data = new google.visualization.DataTable();
+      	data.addColumn('number', 'Retweets');
+      	data.addColumn('number', 'Tweet Length');
+        data.addRows({{tweet_length|safe}})
+
+        var options = {
+          title: 'Effect of Tweet Length on Retweets',
+          hAxis: {title: 'Tweet Length'},
+          vAxis: {title: 'Retweets'},
+          legend: 'none'
+        };
+
+        var chart = new google.visualization.ScatterChart(document.getElementById('scatter'));
+        chart.draw(data, options);
+      }
+    </script>
 </head>
-<body class="background">
+<body>
 
 
-	<div class="profile-container">
-		<div class="left-side-container" style="float:left; width:30%;overflow:hidden;">
-			<div class="mini-container">
-				<p>Alan Ni<p>	
-				<hr></hr>	
-				<p>30 Followers</p>
-			</div>
-		</div>
-		<div class="right-side-container" style="float:left; width:65%; overflow:hidden;">
-			<div class="mini-container" >
-				<div id="piechart_3d" style="width: 400px; height: 200px;"></div>
-				<p>Tweets most at time of day: 5 PM</p>
-
-				<p>Most used word in tweets: Coursera</p>
-				<p>Tweets most at time of day: 5 PM</p>
-
-				<p>Most used word in tweets: Coursera</p>
-				<p>Tweets most at time of day: 5 PM</p>
-
-				<p>Most used word in tweets: Coursera</p>
-				<p>Tweets most at time of day: 5 PM</p>
-
-				<p>Most used word in tweets: Coursera</p>
-
-			</div>
-		</div>
+<div class="profile-container"> 
+	<div class= "profile-section">
+		<img class="circular" src="{{picture}}" >
+		<span class= "section-header"> {{name}} </span>
+		<hr> </hr> 
+		<div class= "section-info"> 
+			<div class="field1"> <b> Followers: </b> {{followers}} </div> 
+		</div> 
+	</div> 
+	<div class= "profile-section">
+		<span class= "section-header"> <b> Most Retweeted Tweets </b></span>
+		<hr> </hr> 
+		<ul style="list-style-type: none;">
+			{% for tweet in most_retweeted %}
+				<i><li>{{tweet}}</li></i>
+				<br>
+			{% endfor %}
+		</ul>
 	</div>
 
+	<div class= "profile-section">
+		<span class= "section-header"> <b> Analytics </b></span>
+		<hr> </hr> 
+				<div id="piechart_3d"> </div>
+				<div id="chart_div"></div>
+				<div id="scatter"></div>
+	</div> 
+
+</div>
 
 </body>

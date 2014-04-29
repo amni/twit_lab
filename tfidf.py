@@ -28,14 +28,14 @@ word_tfidf_dict = {}
 tweet_tfidf_dict = {}
 tweet_wordcount_dict = {}
 
-sys.stdout = open('tfidf_output.txt', 'w')
+#sys.stdout = open('tfidf_output.txt', 'w')
 
 def fetch_word():
 
-	Tweet = db.Tweet
+	ProcessedTweet = db.ProcessedTweet
 	session = db.session
 
-	tweets = session.query(Tweet).all()
+	tweets = session.query(ProcessedTweet).limit(1000)
 	all_words = ''
 
 	for tweet in tweets:
@@ -43,7 +43,7 @@ def fetch_word():
 			# Initializing final dictionary {tweet:tfidf total} & {tweet:# of words}
 			tweet_tfidf_dict[tweet.text] = None
 			tweet_wordcount_dict[tweet.text] = None
-			if guess_language(tweet.text) == 'en':
+			if guess_language.guessLanguage(tweet.text) == 'en':
 				tweet_text = str(tweet.text.encode('utf-8'))
 				tweet_lower = tweet_text.lower()
 				tweet_final = tweet_lower.translate(None, string.punctuation)
@@ -67,14 +67,14 @@ all_words = [w for w in tokens if not w in stopwords.words('english')]
 
 # Query for RT values 
 
-Tweet = db.Tweet
+ProcessedTweet = db.ProcessedTweet
 session = db.session
 
-tweets = session.query(Tweet).all()
+tweets = session.query(ProcessedTweet).limit(1000)
 
 for tweet in tweets:
 
-	if guess_language(tweet.text) == 'en':
+	if guess_language.guessLanguage(tweet.text) == 'en':
 		tweet_text = str(tweet.text.encode('utf-8'))
 
 		# Find unique words (including hashtags) per tweet
