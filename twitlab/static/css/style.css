@@ -67,12 +67,6 @@ font-family: ‘Palatino Linotype’, ‘Book Antiqua’, Palatino, serif;
 }
 
 
-.profile-container{
-    margin-left:auto;
-    margin-right:auto;
-    margin-top:5%;
-    margin-left:2%;
-}
 
 .mini-container{
     width:100%;
@@ -81,3 +75,23 @@ font-family: ‘Palatino Linotype’, ‘Book Antiqua’, Palatino, serif;
     margin-left:2%;
 }
 
+
+.profile-container{
+	margin-left:auto;
+	margin-right:auto;
+	margin-top:7%;
+	width:70%;
+}
+
+.profile-section{
+	padding:20px;
+	margin-bottom:2%;
+	border-color:silver;
+	border-width:1px;
+	border-style:solid;
+	border-radius:10px;
+}
+
+.section-header{
+	font-size:30px;
+}

@@ -3,8 +3,8 @@ from __future__ import print_function
 import time
 from datasift import Client
 
-
-ds = Client("amni", "bd77910619934066a6c4eaf59137779b")
+# Initial Datasift script
+ds = Client(username, api_key)
 
 @ds.on_delete
 def on_delete(interaction):

@@ -1,14 +1,19 @@
-# DB settings file
+# DB settings files
 settings.py
+local_settings.py
 
 #separate file for secret keys
 keys.py
 
 #data file we scrape 
 data.txt
+tfidf_output.txt
 
 # db created
-twitlab.db
+*.db
+db.sqlite3
 
 *.pyc
 
+# Datadump
+twitlab.gz

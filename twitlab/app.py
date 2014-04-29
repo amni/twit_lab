@@ -15,6 +15,11 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from rauth.service import OAuth1Service
 from rauth.utils import parse_utf8_qsl
 import json
+import operator
+import datetime
+from dateutil import parser
+import numpy
+from nltk.corpus import stopwords
 
 
 # Flask config
@@ -103,34 +108,85 @@ def authorized():
     verify = sess.get('account/verify_credentials.json',
                     params={'format':'json'}).json()
 
-    params = {'include_rts': 1,  # Include retweets
+    params = {'include_rts': 0,  # Include retweets
           'count': 100000}       # 10 tweets
 
     r = sess.get('statuses/user_timeline.json', params=params)
 
     messages={}
     tweets=[]
+    retweet_count_map={}
+    followers=0
+    primetime_tweets=0
+    nonprimetime_tweets=0
+    picture_url=""
     for i, tweet in enumerate(r.json(), 1):
-        if not "retweeted_status" in tweet: 
+        picture_url= tweet["user"]["profile_image_url"]
+        if "retweeted_status" not in tweet: 
             retweet_count= tweet['retweet_count']
-            text = tweet['text']
+            text = tweet['text'].lower().strip(".")
+            retweet_count_map[text]=retweet_count
+            tweet_length= len(text)
             tweets.append(text)
-            print text
-            print retweet_count
-
-    messages["tweets"]= tweets
-
+            followers= tweet['user']['followers_count']
+            if is_primetime(parser.parse(tweet['created_at'])):
+                primetime_tweets+=1
+            else:
+                nonprimetime_tweets+=1
+    most_retweeted=sorted(retweet_count_map, key=lambda x:retweet_count_map[x], reverse=True)
+    if len(most_retweeted)>5:
+        most_retweeted=most_retweeted[:5]
+    session["followers"]=followers
+    session["picture_url"]= picture_url
+    session["name"]= verify['name']
+    session["primetime_tweets"]=primetime_tweets
+    session["nonprimetime_tweets"]=nonprimetime_tweets
     User.get_or_create(verify['screen_name'], verify['id'])
-    session['messages']=messages
-    flash('Logged in as ' + verify['name'])
+    session['tweets']=retweet_count_map
+    session['word_tfidf']= get_tfidf_of_words(retweet_count_map)
+    session['tweet_length']= get_retweets_based_on_tweet_length(retweet_count_map)
+    session['most_retweeted']=most_retweeted
+
     return redirect(url_for('profile'))
 
 
 @app.route('/twitter/profile')
 def profile():
-    print session["messages"]  
-    return render_template('profile.html')
+    highest_scoring_words=sorted(session["word_tfidf"], key=lambda x:session["word_tfidf"][x], reverse=True)[:5]
+    tfidf_scores=[]
+    for word in highest_scoring_words:
+        tfidf_scores.append(session["word_tfidf"][word][0])
+    return render_template('profile.html', followers= session["followers"], name=session["name"], \
+                        primetime_tweets=session["primetime_tweets"], nonprimetime_tweets=session["nonprimetime_tweets"],\
+                        picture=session["picture_url"], tfidf_scores=tfidf_scores, highest_scoring_words=highest_scoring_words,\
+                        tweet_length= session["tweet_length"], most_retweeted=session["most_retweeted"])
 
+
+def get_tfidf_of_words(retweet_count_map):
+    word_tfidf={}
+    s=open('english').read()
+    for tweet, retweet_count in retweet_count_map.iteritems():
+        for word in filter(lambda w: not w in s,tweet.split()):
+            if not word in word_tfidf:
+                word_tfidf[word]=[]
+            word_tfidf[word].append(retweet_count)
+    for tweet, retweet_list in word_tfidf.iteritems():
+        word_tfidf[word]=int(numpy.mean(retweet_list))
+    return word_tfidf
+
+def get_retweets_based_on_tweet_length(retweet_count_map):
+    retweets_based_on_tweet_length=[]
+    for tweet, retweet_count in retweet_count_map.iteritems():
+        lst=[]
+        lst.append(len(tweet))
+        lst.append(retweet_count)
+        retweets_based_on_tweet_length.append(lst)
+    return retweets_based_on_tweet_length
+
+
+def is_primetime(date):
+    return date.hour > 16 and date.hour < 22
+  
 
 if __name__ == '__main__':
     db.create_all()
