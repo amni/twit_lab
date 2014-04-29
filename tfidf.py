@@ -28,18 +28,22 @@ word_tfidf_dict = {}
 tweet_tfidf_dict = {}
 tweet_wordcount_dict = {}
 
-sys.stdout = open('tfidf_output.txt', 'w')
+sys.stdout = open('tfidf_output2.txt', 'w')
 
 def fetch_word():
+
 
 	Tweet = db.Tweet
 	session = db.session
 
-	tweets = session.query(Tweet).all()
+	tweets = session.query(Tweet).limit(10000)
+
 	all_words = ''
 
 	for tweet in tweets:
+
 		if tweet.text:
+			print tweet.text
 			# Initializing final dictionary {tweet:tfidf total} & {tweet:# of words}
 			tweet_tfidf_dict[tweet.text] = None
 			tweet_wordcount_dict[tweet.text] = None
@@ -70,7 +74,7 @@ all_words = [w for w in tokens if not w in stopwords.words('english')]
 Tweet = db.Tweet
 session = db.session
 
-tweets = session.query(Tweet).all()
+tweets = session.query(Tweet).limit(10000)
 
 for tweet in tweets:
 
