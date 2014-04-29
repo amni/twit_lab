@@ -1,4 +1,4 @@
-Tweet and corresponding TFIDF scores in descending order:
+Tweet and corresponding TFIDF scores in ascending order:
 ('OMG 99 DAYS HELOL E', 0.06097560975609756)
 ('ROUND 1 OF PLAYOFFS TOMORRRROW \xf0\x9f\x98\x9c', 0.06470588235294118)
 ('WhAT WHY IS HARRY IN LA I', 0.07692307692307693)

@@ -1,4 +1,4 @@
-Tweet and corresponding TFIDF scores in descending order:
+Tweet and corresponding TFIDF scores in ascending order:
 ("I'm on 75 having a relapse #literally", 0.0)
 ('@DanjgD yeah pal same plane \xe2\x9c\x88', 0.0)
 ('@SonAmytastic Gr69\nLol XD', 0.0)

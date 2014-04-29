@@ -1,4 +1,4 @@
-Tweet and corresponding TFIDF scores in descending order:
+Tweet and corresponding TFIDF scores in ascending order:
 ('What the fox say', 0.0)
 ("Haven't been able to sleep:/", 0.0)
 ('@SonAmytastic Gr69\nLol XD', 0.0)

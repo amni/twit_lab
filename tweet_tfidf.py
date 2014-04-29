@@ -29,7 +29,7 @@ tweet_tfidf_dict = {}
 tweet_wordcount_dict = {}
 
 
-sys.stdout = open('tfidf_tweet_output_10000.txt', 'w')
+sys.stdout = open('tfidf_tweet_output_10000_2.txt', 'w')
 
 def fetch_word():
 
@@ -155,7 +155,7 @@ for tweet in tweet_tfidf_dict.keys():
 
 tweet_tfidf_sorted = sorted(tweet_tfidf_sorted.iteritems(), key=operator.itemgetter(1))
 # print 'length of dictionary: ' + str(len(tweet_tfidf_sorted))
-print 'Tweet and corresponding TFIDF scores in descending order:'
+print 'Tweet and corresponding TFIDF scores in ascending order:'
 for x in tweet_tfidf_sorted:
 	print x
 

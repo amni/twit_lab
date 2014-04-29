@@ -1,4 +1,4 @@
-Tweet and corresponding TFIDF scores in descending order:
+Tweet and corresponding TFIDF scores in ascending order:
 ('Yall some pets \xf0\x9f\x98\xb4\xf0\x9f\x98\x82', 0.0)
 ('There we go Blackhawks', 0.0)
 ('@_GRRM_ Love this!', 0.0)

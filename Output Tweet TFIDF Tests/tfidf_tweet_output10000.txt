@@ -1,4 +1,4 @@
-Tweet and corresponding TFIDF scores in descending order:
+Tweet and corresponding TFIDF scores in ascending order:
 ('GOOD MORNING\xe2\x98\x80', 0.0)
 ('ADD DDARK ON BBM FOR ALL MUSIC UPDATES 224DE323!!!!!', 0.0995688770048803)
 ('"@fckptv: WHY DO MY NOSTRILS WHISPER TO MEEEEEE??????????" I HOPE I\'M NOT ONE OF THE ONLY ONES WHO REMEMBERS THIS', 0.11904761904761904)

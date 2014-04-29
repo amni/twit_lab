@@ -1,4 +1,4 @@
-Tweet and corresponding TFIDF scores in descending order:
+Tweet and corresponding TFIDF scores in ascending order:
 ('I Wish..', 0.0)
 ('is me', 0.0)
 ('LOL KUYA RAF IS SO OPPOSITE. HE DOESNT SLEEP AT NIGHT BUT SLEEPS IN THE MORNING. \xf0\x9f\x98\xaa', 0.0)
