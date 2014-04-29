@@ -10,7 +10,7 @@ data.txt
 tfidf_output.txt
 
 # db created
-twitlab.db
+*.db
 db.sqlite3
 
 *.pyc
