@@ -3,7 +3,7 @@ from __future__ import print_function
 import time
 from datasift import Client
 
-
+# Initial Datasift script
 ds = Client(username, api_key)
 
 @ds.on_delete
