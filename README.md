@@ -5,6 +5,10 @@ A social media marketing tool that uses machine learning to predict the user eng
 # Installation
 
     pip install -r requirements.txt
+
+# Data
+
+Data we collected (in the form of full postgres database dump) can be found at https://s3.amazonaws.com/twitlab/twitlab.gz
     
 # Setup
 
