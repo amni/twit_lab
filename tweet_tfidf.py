@@ -29,31 +29,30 @@ tweet_tfidf_dict = {}
 tweet_wordcount_dict = {}
 
 
-sys.stdout = open('tfidf_output.txt', 'w')
+sys.stdout = open('tfidf_tweet_output_10000.txt', 'w')
 
 def fetch_word():
 
 	ProcessedTweet = db.ProcessedTweet
 	session = db.session
 
-	tweets = session.query(ProcessedTweet).limit(1000)
+	tweets = session.query(ProcessedTweet).limit(10000)
 
 	all_words = ''
 
 	for tweet in tweets:
 
 		if tweet.text:
-			print tweet.text
 			# Initializing final dictionary {tweet:tfidf total} & {tweet:# of words}
-			tweet_tfidf_dict[tweet.text] = None
-			tweet_wordcount_dict[tweet.text] = None
-			if guess_language.guessLanguage(tweet.text) == 'en':
-				tweet_text = str(tweet.text.encode('utf-8'))
-				tweet_lower = tweet_text.lower()
-				tweet_final = tweet_lower.translate(None, string.punctuation)
+			tweet_text = str(tweet.text.encode('utf-8'))
+			tweet_tfidf_dict[tweet_text] = None
+			tweet_wordcount_dict[tweet_text] = None
+			#if guess_language.guessLanguage(tweet.text) == 'en':
+			tweet_lower = tweet_text.lower()
+			tweet_final = tweet_lower.translate(None, string.punctuation)
 			
 			# Concatenate all words (including hashtags) in tweet
-				all_words = all_words + ' ' + tweet_final
+			all_words = all_words + ' ' + tweet_final
 
 	return all_words
 
@@ -75,59 +74,49 @@ ProcessedTweet = db.ProcessedTweet
 session = db.session
 
 
-tweets = session.query(ProcessedTweet).limit(1000)
+tweets = session.query(ProcessedTweet).limit(10000)
 
 for tweet in tweets:
 
-	if guess_language.guessLanguage(tweet.text) == 'en':
-		tweet_text = str(tweet.text.encode('utf-8'))
+	#if guess_language.guessLanguage(tweet.text) == 'en':
+	tweet_text = str(tweet.text.encode('utf-8'))
 
-		# Find unique words (including hashtags) per tweet
-		tweet_lower = tweet_text.lower()
-		tweet_final = tweet_lower.translate(None, string.punctuation)
-		unique_word_list = nltk.word_tokenize(tweet_final)
+	# Find unique words (including hashtags) per tweet
+	tweet_lower = tweet_text.lower()
+	tweet_final = tweet_lower.translate(None, string.punctuation)
+	unique_word_list = nltk.word_tokenize(tweet_final)
 
-		# Calculate total RTs and Tweets to find TFIDF
-		for word_in_tweet in unique_word_list:
-			if word_in_tweet in all_words:
+	# Calculate total RTs and Tweets to find TFIDF
+	for word_in_tweet in unique_word_list:
+		if word_in_tweet in all_words:
 
-				if word_in_tweet in word_RTcount_dict:
-					if word_RTcount_dict[word_in_tweet] != None:
-						word_RTcount_dict[word_in_tweet] = word_RTcount_dict[word_in_tweet] + tweet.retweet_count
-						#print 'word_RTcount_dict[word_in_tweet]' + str(word_RTcount_dict[word_in_tweet])
-				else:
-					word_RTcount_dict[word_in_tweet] = tweet.retweet_count
-					#print 'word_RTcount_dict[word_in_tweet]' + str(word_RTcount_dict[word_in_tweet])
+			if word_in_tweet in word_RTcount_dict:
+				if word_RTcount_dict[word_in_tweet] != None:
+					word_RTcount_dict[word_in_tweet] = word_RTcount_dict[word_in_tweet] + tweet.retweet_count
+					#print 'word_RTcount_dict[word_in_tweet] \n' + str(word_RTcount_dict[word_in_tweet])
+			else:
+				word_RTcount_dict[word_in_tweet] = tweet.retweet_count
+				#print 'word_RTcount_dict[word_in_tweet] \n' + str(word_RTcount_dict[word_in_tweet])
 
-				if word_in_tweet in word_Tcount_dict:
-					if word_Tcount_dict[word_in_tweet] != None:
-						word_Tcount_dict[word_in_tweet] = word_Tcount_dict[word_in_tweet] + 1
-						#print 'word_Tcount_dict[word_in_tweet]' + ' ' +  word_in_tweet + ' ' + str(word_Tcount_dict[word_in_tweet])
-				else:
-					word_Tcount_dict[word_in_tweet] = 1
+			if word_in_tweet in word_Tcount_dict:
+				if word_Tcount_dict[word_in_tweet] != None:
+					word_Tcount_dict[word_in_tweet] = word_Tcount_dict[word_in_tweet] + 1
 					#print 'word_Tcount_dict[word_in_tweet]' + ' ' +  word_in_tweet + ' ' + str(word_Tcount_dict[word_in_tweet])
+			else:
+				word_Tcount_dict[word_in_tweet] = 1
+				#print 'word_Tcount_dict[word_in_tweet]' + ' ' +  word_in_tweet + ' ' + str(word_Tcount_dict[word_in_tweet])
 
 
 word_tfidf_dict = {}
 
 for word in word_Tcount_dict:
-	num_RT = None
-	num_Tweet = None
-	key = ''
+	num_RT = word_RTcount_dict[word]
+	num_Tweet = word_Tcount_dict[word]
 
-	for entry in word_RTcount_dict:
-		#print "Key: " + str(entry)
-		#print "Retweets: " + str(word_RTcount_dict[entry])
-		num_RT = word_RTcount_dict[entry]
-
-	for entry in word_Tcount_dict:
-		#print "Key: " + str(entry)
-		#print "Tweet Count: " + str(word_Tcount_dict[entry])
-		num_Tweet = word_Tcount_dict[entry]
-
-	tfidf_value = num_RT/num_Tweet
+	tfidf_value = float(float(num_RT)/float(num_Tweet))
 
 	word_tfidf_dict[word] = tfidf_value
+	#print 'tfidf_value' + str(tfidf_value)
 
 # word_tfidf_sorted = sorted(word_tfidf_dict.iteritems(), key=operator.itemgetter(1))
 
@@ -142,25 +131,30 @@ for word in word_Tcount_dict:
 
 for word in word_tfidf_dict.keys():
 	for tweet in tweet_tfidf_dict.keys():
-		if word in tweet:
-			if tweet_tfidf_dict[tweet] != None:
-				tweet_tfidf_dict[tweet] = tweet_tfidf_dict[tweet] + word_tfidf_dict[word]
-				tweet_wordcount_dict[tweet] = tweet_wordcount_dict[tweet] + 1
-			else:
-				tweet_tfidf_dict[tweet] = word_tfidf_dict[word]
-				tweet_wordcount_dict[tweet] = 1
+		if isinstance(tweet, str) and isinstance(word, str):
+			if word in tweet:
+				if tweet_tfidf_dict[tweet] != None:
+					tweet_tfidf_dict[tweet] = tweet_tfidf_dict[tweet] + word_tfidf_dict[word]
+					tweet_wordcount_dict[tweet] = tweet_wordcount_dict[tweet] + 1
+				else:
+					tweet_tfidf_dict[tweet] = word_tfidf_dict[word]
+					tweet_wordcount_dict[tweet] = 1
 
 
 
 # Calculates avg and sorts
 
-for tweet in tweet_tfidf_dict.keys():
-	tweet_tfidf_dict[tweet] = tweet_tfidf_dict[tweet]/tweet_wordcount_dict[tweet]
-
-
 tweet_tfidf_sorted = {}
-tweet_tfidf_sorted = sorted(tweet_tfidf_sorted.iteritems(), key=operator.itemgetter(1))
 
+for tweet in tweet_tfidf_dict.keys():
+	if(tweet_tfidf_dict[tweet] != None or tweet_wordcount_dict[tweet] != None):
+		#print str(tweet_tfidf_dict[tweet]) + '\n'
+		#print 'wordcount for tweet ' + tweet + ' is \n' + str(tweet_wordcount_dict[tweet]) + '\n'
+		tweet_tfidf_sorted[tweet] = float(float(tweet_tfidf_dict[tweet])/float(tweet_wordcount_dict[tweet]))
+		#print 'score: ' + str(tweet_tfidf_sorted[tweet]) + '\n'
+
+tweet_tfidf_sorted = sorted(tweet_tfidf_sorted.iteritems(), key=operator.itemgetter(1))
+# print 'length of dictionary: ' + str(len(tweet_tfidf_sorted))
 print 'Tweet and corresponding TFIDF scores in descending order:'
 for x in tweet_tfidf_sorted:
 	print x
